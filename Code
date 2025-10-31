@@ -1,0 +1,162 @@
+#include<iostream>
+using namespace std;
+
+struct node{
+	int patient_id;
+	node* prev=nullptr;
+	node* next=nullptr;
+	  
+	node(int id){
+		patient_id=id;
+	}
+};
+
+class patient_queue{
+	private:
+		node* head;
+		node* tail;
+		
+	public:
+		patient_queue(){
+			head=nullptr;
+			tail=nullptr;
+		}
+		   
+		
+	void insert_in_start(int patient_id){
+		node* newnode=new node(patient_id);
+		if(head==nullptr){
+			head=tail=newnode;
+		}else{
+			newnode->next=head;
+			head->prev=newnode;
+			head=newnode;
+		}	
+	}
+	
+	       
+	void insert_at_last(int patient_id){
+	node* newnode=new node(patient_id);
+	if(head==nullptr){
+		head=tail=newnode;
+	}else{
+		tail->next=newnode;
+		newnode->prev=tail;
+		tail=newnode;
+	}	
+	}
+
+        
+	void insert_at_curr(int patient_id,int position){
+		if(position<=1){
+			insert_in_start(patient_id);
+    		return;
+		}
+		node* current=head;
+		int count=1;
+		while(current!=nullptr and count<position-1){
+			current=current->next;
+			count++;
+	}
+	
+			if(current==nullptr){
+				insert_at_last(patient_id);
+			}else{
+			node* newnode=new node(patient_id);
+			newnode->next=current->next;
+			newnode->prev=current;
+			
+		if(current->next!=nullptr){
+			current->next->prev=newnode;
+		}else{
+			tail=newnode;
+		}
+		current->next=newnode;	
+	}
+}
+
+    
+	void delete_in_start(){
+		if(head==nullptr){
+			cout<<"list is empty"<<endl;
+			return;
+		}
+		node* temp=head;
+		if(head==tail){
+			head=tail=nullptr;
+		}else{
+			head=head->next;
+			head->prev=nullptr;
+		}
+		delete temp;
+	}
+	
+	void display_forward(){
+		node* current=head;
+		cout<<"forward(start to end): ";
+		while(current!=nullptr){
+			cout<<current->patient_id<<" ";
+			current=current->next;
+		}
+	}
+	
+	void displaybackward(){
+		node* current=tail;
+		cout<<"backward (from end to start):";
+		while (current!=nullptr){
+			cout<<current->patient_id<<" ";
+			current=current->prev;
+		}
+		cout<<endl;
+	}
+
+
+	int get_head_id(){
+    if (head == nullptr)
+        return -1;
+    return head->patient_id;
+}
+
+
+	int get_tail_id(){
+    if (tail == nullptr)
+        return -1;
+    return tail->patient_id;
+	}
+};
+int main(){
+	patient_queue pq;
+
+    pq.insert_at_last(102);
+    pq.display_forward();
+    
+	cout<<endl;
+	
+    pq.insert_in_start(200);
+    pq.display_forward();
+    
+    cout<<endl;
+
+    pq.insert_at_curr(150, 2);
+    pq.display_forward();
+    
+    cout<<endl;
+
+    pq.delete_in_start();
+    pq.display_forward();
+    
+    cout<<endl;
+
+    pq.insert_at_last(300);
+    pq.display_forward();
+    
+    cout<<endl;
+    
+	cout << "Patient ID at head: " << pq.get_head_id() << endl;
+	cout << "Patient ID at tail: " << pq.get_tail_id() << endl;
+	
+    pq.display_forward();
+    pq.displaybackward();
+
+    return 0;
+}
